@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, shrink-to-fit=no">
+    <meta name="theme-color" content="#0b0719">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Astro CET | College of Engineering Trivandrum</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0719;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b0719;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        #loadingScreen.finished {
+            pointer-events: none;
+        }
+        
+        .loading-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        
+        .loading-logo {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoFloat 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        .loading-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 30px #a78bfa);
+        }
+        
+        .loading-text-container {
+            overflow: hidden;
+        }
+        
+        .loading-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #e9d5ff, #67e8f9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 8px;
+            white-space: nowrap;
+            animation: slideIn 1.2s ease forwards;
+            text-shadow: 0 0 40px #7e22ce;
+        }
+        
+        .loading-subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            animation-delay: 1.2s;
+        }
+        
+        .loading-bar-container {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            max-width: 80%;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 1.5s;
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(168, 139, 250, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .loading-bar-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa, #67e8f9);
+            border-radius: 10px;
+            animation: progressBar 2s ease-in-out forwards;
+            animation-delay: 1.5s;
+            box-shadow: 0 0 20px #a78bfa;
+        }
+        
+        .loading-percentage {
+            text-align: center;
+            margin-top: 10px;
+            color: #a78bfa;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 1.5s;
+        }
+        
+        .loading-stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .loading-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: starTwinkle 2s infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        
+        @keyframes slideIn {
+            0% { transform: translateX(-30px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes progressBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+        
+        /* Fade-in for content */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Portal overlay */
+        .portal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #0f0720, #000);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        body.portal-active .portal-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        body.portal-active .content {
+            filter: blur(2px);
+            transition: 0.3s;
+        }
+        .portal-message {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 0 40px cyan;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+        }
+        .wings-hint {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.8;
+            color: #94a3b8;
+        }
+        
+        /* Background Layers */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(ellipse at 40% 40%, #141028 0%, #03010a 100%);
+        }
+        
+        canvas#bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: block;
+            pointer-events: none;
+        }
+        
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+        
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .content { padding: 0 1.5rem; }
+            section { padding: 4rem 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .content { padding: 0 1rem; }
+            section { padding: 3rem 0; }
+            
+            .loading-container { 
+                flex-direction: column; 
+                gap: 15px; 
+            }
+            .loading-title { 
+                font-size: 2.5rem; 
+                letter-spacing: 4px;
+                text-align: center;
+                white-space: normal;
+            }
+            .loading-subtitle { 
+                text-align: center;
+                font-size: 0.8rem;
+                letter-spacing: 4px;
+            }
+            .loading-logo { width: 80px; height: 80px; }
+            .loading-bar-container { width: 250px; bottom: 60px; }
+            .portal-message { font-size: 2rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .content { padding: 0 0.8rem; }
+            section { padding: 2.5rem 0; }
+            
+            .loading-title { 
+                font-size: 1.8rem; 
+                letter-spacing: 2px;
+            }
+            .loading-subtitle {
+                font-size: 0.7rem;
+                letter-spacing: 3px;
+            }
+            .loading-logo { width: 60px; height: 60px; }
+            .loading-bar-container { width: 200px; bottom: 50px; }
+            .portal-message { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .loading-title { font-size: 1.5rem; }
+            .loading-subtitle { font-size: 0.6rem; }
+            .loading-bar-container { width: 180px; }
+        }
+        
+        /* Landscape Mode */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .loading-bar-container { bottom: 30px; }
+            .loading-logo { width: 50px; height: 50px; }
+            .loading-title { font-size: 2rem; }
+        }
+        
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            button, a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* High Contrast / Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loadingScreen">
+    <div class="loading-stars" id="loadingStars"></div>
+    
+    <div class="loading-container">
+        <div class="loading-logo">
+            <img src="astrocet-logo.png" alt="Astro CET Logo" id="loadingLogoImg" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+            <div id="fallbackLogo" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;">
+                <i class="fas fa-rocket" style="font-size: 3rem; color: #c084fc; filter: drop-shadow(0 0 20px #a78bfa);"></i>
+            </div>
+        </div>
+        
+        <div class="loading-text-container">
+            <div class="loading-title">astroCET</div>
+            <div class="loading-subtitle">College of Engineering Trivandrum</div>
+        </div>
+    </div>
+    
+    <div class="loading-bar-container">
+        <div class="loading-bar">
+            <div class="loading-bar-progress"></div>
+        </div>
+        <div class="loading-percentage" id="loadingPercentage">0%</div>
+    </div>
+</div>
+
+<!-- Background Layers -->
+<div class="starfield"></div>
+<canvas id="bgCanvas"></canvas>
+
+<!-- Portal Overlay -->
+<div class="portal-overlay" id="portalOverlay">
+    <div class="portal-message" id="portalMessage"></div>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    <nav class="navbar">
+        <div class="logo" id="logo"></div>
+        <div class="nav-links" id="navLinks"></div>
+    </nav>
+
+    <section class="hero">
+        <h1 id="heroTitle"></h1>
+        <div class="subtitle" id="heroSubtitle"></div>
+        <div class="college-name" id="collegeName"></div>
+        <button class="cta-button" id="heroButton">
+            <span id="heroButtonText"></span>
+        </button>
+
+    </section>
+
+    <section id="about" class="fade-in">
+        <h2><i class="fas fa-globe" style="margin-right: 15px;"></i> <span id="aboutTitle"></span></h2>
+        
+        <div class="about-main-tile">
+            <div class="about-icon"><i class="fas fa-star"></i></div>
+            <div class="about-content">
+                <p class="highlight-text" id="aboutHighlight"></p>
+                <p id="aboutFullText"></p>
+            </div>
+        </div>
+        
+        <div class="tiles-container">
+            <div class="info-tile vision-tile">
+                <div class="tile-header">
+                    <div class="tile-icon"><i class="fas fa-eye"></i></div>
+                    <h3 id="visionTitle"></h3>
+                </div>
+                <div class="tile-content">
+                    <p id="visionText"></p>
+                </div>
+            </div>
+            
+            <div class="info-tile mission-tile">
+                <div class="tile-header">
+                    <div class="tile-icon"><i class="fas fa-bullseye"></i></div>
+                    <h3 id="missionTitle"></h3>
+                </div>
+                <div class="tile-content">
+                    <p id="missionText"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="wings" class="fade-in">
+        <h2><i class="fas fa-star" style="margin-right: 15px;"></i> <span id="wingsTitle"></span></h2>
+        <div class="wings-container">
+            <a href="#" class="wing-card" id="roverWingCard">
+                <div class="wing-icon"><i id="roverIcon" class="fas"></i><span id="roverEmoji"></span></div>
+                <h3 id="roverName"></h3>
+                <div class="wing-desc" id="roverDesc"></div>
+                <div class="wing-emoji" id="roverEmojiLarge"></div>
+                <div class="portal-hint" id="roverHint"></div>
+            </a>
+            <a href="#" class="wing-card" id="stardomeWingCard">
+                <div class="wing-icon"><i id="stardomeIcon" class="fas"></i><span id="stardomeEmoji"></span></div>
+                <h3 id="stardomeName"></h3>
+                <div class="wing-desc" id="stardomeDesc"></div>
+                <div class="wing-emoji" id="stardomeEmojiLarge"></div>
+                <div class="portal-hint" id="stardomeHint"></div>
+            </a>
+        </div>
+    </section>
+
+    <section id="events" class="fade-in">
+        <h2><i class="fas fa-calendar-alt"></i> <span id="eventsTitle"></span></h2>
+        <div class="events-grid" id="eventsGrid"></div>
+        
+        <div class="announcement-banner" id="announcementBanner">
+            <i id="announcementIcon" class="fas"></i>
+            <div>
+                <h3 id="announcementTitle"></h3>
+                <p id="announcementText"></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="fade-in">
+        <h2><i class="fas fa-images"></i> <span id="galleryTitle"></span></h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <section id="team" class="fade-in">
+        <h2><i class="fas fa-users"></i> <span id="teamTitle"></span></h2>
+        <div class="team-grid" id="teamGrid"></div>
+    </section>
+
+    <section id="contact" class="fade-in">
+        <h2><i class="fas fa-paper-plane"></i> <span id="contactTitle"></span></h2>
+        
+        <div class="contact-wrapper">
+            <div class="contact-info-cards" id="contactInfoCards"></div>
+            
+            <div class="contact-main">
+                <div class="contact-form-container">
+                    <div class="form-header">
+                        <i class="fas fa-star"></i>
+                        <h3 id="formTitle"></h3>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    
+                    <form class="contact-form-enhanced">
+                        <div class="form-row">
+                            <div class="form-group-enhanced">
+                                <label for="name"><i class="fas fa-user-astronaut"></i><span id="nameLabel"></span></label>
+                                <input type="text" id="name" placeholder="">
+                            </div>
+                            <div class="form-group-enhanced">
+                                <label for="email"><i class="fas fa-envelope"></i><span id="emailLabel"></span></label>
+                                <input type="email" id="email" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group-enhanced">
+                            <label for="subject"><i class="fas fa-tag"></i><span id="subjectLabel"></span></label>
+                            <input type="text" id="subject" placeholder="">
+                        </div>
+                        <div class="form-group-enhanced">
+                            <label for="message"><i class="fas fa-comment"></i><span id="messageLabel"></span></label>
+                            <textarea id="message" rows="4" placeholder=""></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">
+                            <span id="submitButtonText"></span>
+                            <i class="fas fa-rocket"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="social-section">
+                    <h3 id="socialTitle"></h3>
+                    <p id="socialSubtitle"></p>
+                    <div class="social-links-enhanced" id="socialLinks"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p id="footerCopyright"></p>
+        <p style="margin-top: 1rem; opacity: 0.6;" id="footerTagline"></p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

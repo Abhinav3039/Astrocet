@@ -1,0 +1,114 @@
+{
+  "club": {
+    "name": "astroCET",
+    "fullName": "astro CET",
+    "college": "College of Engineering Trivandrum",
+    "established": 2019,
+    "tagline": "Exploring the Universe Beyond Limits"
+  },
+  "navigation": [
+    { "name": "About", "href": "#about" },
+    { "name": "Wings", "href": "#wings" },
+    { "name": "Events", "href": "#events" },
+    { "name": "Gallery", "href": "#gallery" },
+    { "name": "Team", "href": "#team" },
+    { "name": "Contact", "href": "#contact" }
+  ],
+  "hero": {
+    "title": "astroCET",
+    "subtitle": "Exploring the Universe Beyond Limits",
+    "buttonText": "About Us"
+  },
+  "about": {
+    "description": "AstroCET is the esteemed astronomy club of the College of Engineering Trivandrum (CET).",
+    "fullText": "AstroCET has embarked on a journey of astronomical proportions over the past year. Established in 2019 as a humble hobby club, AstroCET has now evolved into a beacon of celestial exploration, fostering camaraderie among students while diving deeper into the technical facets of the cosmos.",
+    "vision": {
+      "title": "Vision",
+      "icon": "fa-eye",
+      "text": "AstroCET aims to lead in astronomy education and outreach, inspiring students and the public to explore the cosmos. By fostering skill development, collaborating with institutions, and promoting innovation, the club seeks to create an inclusive environment, expand its reach, and contribute to scientific knowledge."
+    },
+    "mission": {
+      "title": "Mission",
+      "icon": "fa-bullseye",
+      "text": "The club's primary mission is to ignite a passion for astronomy among students and the general public, providing a platform for learning, exploration, and innovation."
+    }
+  },
+  "wings": {
+    "rover": {
+      "name": "Rover Wing",
+      "icon": "fa-robot",
+      "description": "Robotics · Rovers · Space Tech",
+      "hint": "Enter the lab",
+      "url": "https://www.google.com"
+    },
+    "stardome": {
+      "name": "Stardome Wing",
+      "icon": "fa-star",
+      "description": "Stargazing · Celestial Events · Constellations",
+      "hint": "Observe the sky",
+      "url": "https://www.google.com"
+    }
+  },
+  "events": [
+    {
+      "date": "25 November 2023",
+      "icon": "fa-camera",
+      "title": "Astrophotography Workshop",
+      "description": "ASTRO-CET hosted an astrophotography workshop with CET SHUTTERBUGS and AASTRO KERALA, led by renowned expert Sarath Prabhavu J."
+    },
+    {
+      "date": "26 November 2023",
+      "icon": "fa-sun",
+      "title": "Solar Probing Workshop",
+      "description": "Expedition Aditya, held in collaboration with Shastra Snehi, focused on solar probing and sunspot viewing, exploring the Sun's dynamics."
+    }
+    
+  ],
+  "announcement": {
+    "icon": "fa-bullhorn",
+    "title": "Website Launch",
+    "description": "We are excited to announce the launch of the new AstroCET website! This online platform is designed to be your go-to resource for all things astronomy."
+  },
+  "gallery": [
+    { "url": "", "alt": "galaxy" },
+    { "url": "", "alt": "nebula" },
+    { "url": "", "alt": "stars" },
+    { "url": "", "alt": "moon" }
+  ],
+  "team": [
+    { "name": "Dr. Aris Thorne", "role": "Faculty Advisor", "icon": "fa-user-astronaut" },
+    { "name": "Lina Vega", "role": "Rover Lead", "icon": "fa-user-tie" },
+    { "name": "Orion K.", "role": "Stardome Lead", "icon": "fa-user-graduate" },
+    { "name": "Nova Chen", "role": "Events Coordinator", "icon": "fa-user-astronaut" }
+  ],
+  "contact": {
+    "info": [
+      { "icon": "fa-map-marker-alt", "title": "Visit Us", "lines": ["College of Engineering Trivandrum", "Thiruvananthapuram, Kerala"] },
+      { "icon": "fa-envelope", "title": "Email Us", "lines": ["astrocet@cet.ac.in", "info@astrocet.org"] },
+      { "icon": "fa-globe", "title": "Website", "lines": ["astrocet.vercel.app"] }
+    ],
+    "form": {
+      "title": "Send Us a Signal",
+      "nameLabel": "Your Name",
+      "namePlaceholder": "e.g., Neil Armstrong",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your@email.com",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "What's this about?",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Your cosmic message...",
+      "submitText": "Launch Message"
+    },
+    "socialTitle": "Connect With Us",
+    "socialSubtitle": "Follow our journey through the cosmos",
+    "social": [
+      { "icon": "fa-instagram", "name": "Instagram", "url": "#" },
+      { "icon": "fa-youtube", "name": "YouTube", "url": "#" },
+      { "icon": "fa-linkedin-in", "name": "LinkedIn", "url": "#" }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025 Astro CET — College of Engineering Trivandrum | Established 2019",
+    "tagline": "✨ Exploring the Universe Beyond Limits ✨"
+  }
+}
