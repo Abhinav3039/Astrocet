@@ -550,7 +550,24 @@
         <p style="margin-top: 1rem; opacity: 0.6;" id="footerTagline"></p>
     </footer>
 </div>
-
+<!-- Modal Popup for Wings -->
+<div class="wing-modal" id="wingModal">
+    <div class="wing-modal-overlay" id="modalOverlay"></div>
+    <div class="wing-modal-content">
+        <button class="wing-modal-close" id="modalClose">&times;</button>
+        <div class="wing-modal-header">
+            <div class="modal-icon" id="modalIcon"></div>
+            <h2 id="modalTitle"></h2>
+        </div>
+        <div class="wing-modal-body" id="modalBody">
+            <!-- Content will be populated dynamically -->
+        </div>
+        <div class="wing-modal-footer">
+            <button class="modal-btn modal-btn-primary" id="modalPrimaryBtn">Visit Page</button>
+            <button class="modal-btn modal-btn-secondary" id="modalSecondaryBtn">Close</button>
+        </div>
+    </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

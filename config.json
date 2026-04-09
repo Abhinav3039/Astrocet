@@ -39,14 +39,14 @@
       "icon": "fa-robot",
       "description": "Robotics · Rovers · Space Tech",
       "hint": "Enter the lab",
-      "url": "https://www.google.com"
+      "url": "rover.html"
     },
     "stardome": {
       "name": "Stardome Wing",
       "icon": "fa-star",
       "description": "Stargazing · Celestial Events · Constellations",
       "hint": "Observe the sky",
-      "url": "https://www.google.com"
+      "url": "stardome.html"
     }
   },
   "events": [

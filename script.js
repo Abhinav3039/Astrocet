@@ -121,7 +121,7 @@
         }
 
         // Navigation
-        safeSet('logo', ` ${CONFIG.club?.fullName || 'Astro CET'}`);
+        safeSet('logo', `🌙 ${CONFIG.club?.fullName || 'Astro CET'}`);
         const navLinks = document.getElementById('navLinks');
         if (navLinks && CONFIG.navigation) {
             navLinks.innerHTML = CONFIG.navigation.map(item => 
@@ -135,6 +135,7 @@
         safeSet('collegeName', CONFIG.club?.college);
         safeSet('heroButtonIcon', `fas ${CONFIG.hero?.buttonIcon || 'fa-star'}`, 'class');
         safeSet('heroButtonText', CONFIG.hero?.buttonText);
+        safeSet('heroHint', `✦ established ${CONFIG.club?.established || 2019} ✦`, 'html');
 
         // About
         safeSet('aboutTitle', `About ${CONFIG.club?.fullName || 'Us'}`);
@@ -168,6 +169,7 @@
             PORTAL_URLS.stardome = CONFIG.wings.stardome.url;
         }
 
+        safeSet('wingsHint', '✨ click on any wing to explore ✨', 'html');
 
         // Events
         safeSet('eventsTitle', 'Past Events');
@@ -273,6 +275,10 @@
     let shootingStars = [];
     const STAR_COUNT = 200;
 
+    let mouseX = 0;
+    let mouseY = 0;
+    let mousePresent = false;
+
     function initStars() {
         stars = [];
         for (let i = 0; i < STAR_COUNT; i++) {
@@ -297,6 +303,7 @@
 
     function drawNebula() {
         if (!ctx) return;
+        
         const grad1 = ctx.createRadialGradient(width * 0.3, height * 0.4, 50, width * 0.5, height * 0.5, 800);
         grad1.addColorStop(0, 'rgba(80, 40, 140, 0.15)');
         grad1.addColorStop(0.7, 'rgba(10, 5, 30, 0.1)');
@@ -325,37 +332,75 @@
         const time = Date.now() * 0.002;
         
         stars.forEach(star => {
+            let xPos = star.x * width;
+            let yPos = star.y * height;
+            
             const parallaxOffset = scrollY * 0.02 * star.speed;
-            let yPos = (star.y * height - parallaxOffset) % height;
+            yPos = (yPos - parallaxOffset) % height;
             if (yPos < 0) yPos += height;
             
             const flicker = Math.sin(time + star.x * 10) * 0.2 + 0.8;
-            const alpha = star.brightness * flicker;
+            let alpha = star.brightness * flicker;
+            
+            if (mousePresent) {
+                const dx = mouseX - xPos;
+                const dy = mouseY - yPos;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const glowDistance = 250;
+                
+                if (distance < glowDistance) {
+                    const brightnessBoost = 1 + (1 - distance / glowDistance) * 4.0;
+                    alpha = Math.min(alpha * brightnessBoost, 1);
+                    
+                    const extraTwinkle = Math.sin(time * 6 + star.x * 40) * 0.3;
+                    alpha = Math.min(alpha + extraTwinkle, 1);
+                    
+                    const sizeBoost = 1 + (1 - distance / glowDistance) * 1.2;
+                    ctx.shadowBlur = star.radius * 10 * sizeBoost;
+                    ctx.shadowColor = '#a78bfa';
+                } else {
+                    ctx.shadowBlur = star.radius * 3;
+                    ctx.shadowColor = '#b39ddb';
+                }
+            } else {
+                ctx.shadowBlur = star.radius * 3;
+                ctx.shadowColor = '#b39ddb';
+            }
             
             ctx.beginPath();
             ctx.fillStyle = star.color.replace('1)', `${alpha})`);
-            ctx.shadowColor = '#b39ddb';
-            ctx.shadowBlur = star.radius * 3;
-            ctx.arc(star.x * width, yPos, star.radius * 0.7, 0, Math.PI * 2);
+            
+            let starSize = star.radius * 0.7;
+            if (mousePresent) {
+                const dx = mouseX - xPos;
+                const dy = mouseY - yPos;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 250) {
+                    starSize *= 1 + (1 - distance / 250) * 0.8;
+                }
+            }
+            
+            ctx.arc(xPos, yPos, starSize, 0, Math.PI * 2);
             ctx.fill();
             
             if (star.radius > 1.8) {
-                ctx.shadowBlur = 12;
-                ctx.fillStyle = `rgba(200, 230, 255, ${alpha * 1.3})`;
-                ctx.arc(star.x * width, yPos, star.radius * 0.4, 0, Math.PI * 2);
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = `rgba(220, 240, 255, ${alpha * 1.5})`;
+                ctx.arc(xPos, yPos, star.radius * 0.6, 0, Math.PI * 2);
                 ctx.fill();
             }
         });
+        
         ctx.shadowBlur = 0;
     }
 
     function updateShootingStars() {
-        if (Math.random() < 0.02 && shootingStars.length < 3) {
+        if (Math.random() < 0.005 && shootingStars.length < 2) {
             shootingStars.push({
                 x: Math.random() * width,
                 y: Math.random() * height * 0.3,
                 len: 80 + Math.random() * 150,
-                speed: 12 + Math.random() * 20,
+                speed: 5 + Math.random() * 8,
                 angle: -0.3 + Math.random() * 0.6,
                 life: 1.0,
                 width: 2 + Math.random() * 3
@@ -404,40 +449,11 @@
         requestAnimationFrame(animateStarfield);
     }
 
-    // ========== PORTAL WARP ==========
-    const msg = document.getElementById('portalMessage');
-    
-    function animateWarpText(targetText, callback) {
-        if (!msg) {
-            if (callback) callback();
-            return;
-        }
-        const characters = targetText.split('');
-        let currentText = '';
-        let index = 0;
-        msg.innerHTML = '';
-        
-        const interval = setInterval(() => {
-            if (index < characters.length) {
-                currentText += characters[index];
-                msg.innerHTML = currentText;
-                index++;
-            } else {
-                clearInterval(interval);
-                if (callback) callback();
-            }
-        }, 40);
-    }
-
+    // ========== PAGE NAVIGATION ==========
     function triggerPortal(wingType) {
-        document.body.classList.add('portal-active');
-        const targetMessage = wingType === 'rover' ? '🚀 WARPING TO ROVER LAB...' : '🌠 ENTERING STARDOME...';
-        
-        animateWarpText(targetMessage, () => {
-            setTimeout(() => {
-                window.location.href = PORTAL_URLS[wingType] || '#';
-            }, 200);
-        });
+        if (PORTAL_URLS[wingType] && PORTAL_URLS[wingType] !== '#') {
+            window.location.href = PORTAL_URLS[wingType];
+        }
     }
 
     // ========== EVENT LISTENERS ==========
@@ -484,10 +500,6 @@
         }
     }
 
-    window.addEventListener('pageshow', () => {
-        document.body.classList.remove('portal-active');
-    });
-
     // ========== SCROLL ANIMATIONS ==========
     function setupScrollAnimations() {
         const fadeElements = document.querySelectorAll('.fade-in');
@@ -508,19 +520,46 @@
         if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // ========== MOUSE PARALLAX ==========
+    // ========== MOUSE PARALLAX & STAR GLOW ==========
     document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        mousePresent = true;
+        
         const hero = document.querySelector('.hero');
         if (hero) {
             const moveX = (e.clientX / window.innerWidth - 0.5) * 12;
             const moveY = (e.clientY / window.innerHeight - 0.5) * 12;
             hero.style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
+        
+        document.querySelectorAll('.wing-card').forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const dx = e.clientX - centerX;
+            const dy = e.clientY - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 400) {
+                const tiltX = dy / 15;
+                const tiltY = -dx / 15;
+                card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02) translateY(-10px)`;
+            } else {
+                card.style.transform = '';
+            }
+        });
     });
 
     document.addEventListener('mouseleave', () => {
+        mousePresent = false;
+        
         const hero = document.querySelector('.hero');
         if (hero) hero.style.transform = '';
+        
+        document.querySelectorAll('.wing-card').forEach(card => {
+            card.style.transform = '';
+        });
     });
 
     // ========== INITIALIZATION ==========

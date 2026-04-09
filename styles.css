@@ -1551,3 +1551,215 @@ footer {
         image-rendering: -webkit-optimize-contrast;
     }
 }
+/* ========== MODAL POPUP STYLES ========== */
+.wing-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.wing-modal.active {
+    display: flex;
+}
+
+.wing-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
+.wing-modal-content {
+    position: relative;
+    background: linear-gradient(135deg, rgba(15, 10, 35, 0.95), rgba(8, 4, 22, 0.98));
+    backdrop-filter: blur(20px);
+    border-radius: 32px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid rgba(168, 139, 250, 0.4);
+    box-shadow: 0 0 60px rgba(139, 92, 246, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10002;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.wing-modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(168, 139, 250, 0.3);
+    color: #cbd5e1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.wing-modal-close:hover {
+    background: #8b5cf6;
+    color: white;
+    border-color: #a78bfa;
+    transform: rotate(90deg);
+}
+
+.wing-modal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.modal-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 20px cyan);
+}
+
+.wing-modal-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e0f2fe, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.wing-modal-body {
+    color: #b9c8e6;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.wing-modal-body p {
+    margin-bottom: 1rem;
+}
+
+.modal-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.modal-feature-tag {
+    background: rgba(139, 92, 246, 0.2);
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    color: #c084fc;
+    border: 1px solid rgba(168, 139, 250, 0.3);
+}
+
+.wing-modal-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    flex: 1;
+    max-width: 180px;
+}
+
+.modal-btn-primary {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+}
+
+.modal-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5);
+    background: linear-gradient(135deg, #9d6fff, #7c7aff);
+}
+
+.modal-btn-secondary {
+    background: rgba(20, 15, 45, 0.8);
+    color: #cbd5e1;
+    border: 1px solid rgba(168, 139, 250, 0.4);
+}
+
+.modal-btn-secondary:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: #a78bfa;
+    color: white;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .wing-modal-content {
+        padding: 2rem 1.5rem;
+        width: 95%;
+    }
+    
+    .wing-modal-header h2 {
+        font-size: 2rem;
+    }
+    
+    .modal-icon {
+        font-size: 3rem;
+    }
+    
+    .wing-modal-footer {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .modal-btn {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .wing-modal-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .wing-modal-close {
+        top: 1rem;
+        right: 1rem;
+        width: 35px;
+        height: 35px;
+    }
+}
